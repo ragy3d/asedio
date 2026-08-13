@@ -4,13 +4,32 @@ Batalla medieval en tiempo real con progresión por arenas. Ganás copas, subís
 de arena, desbloqueás tropas, armás tu equipo de 4 y comprás skins para tu
 torre. Una partida dura entre 2 y 4 minutos.
 
-## Cómo lo abro
+## Dónde se juega
+
+Publicado en **https://ragy3d.github.io/asedio/**
+
+Para levantarlo en tu máquina:
 
 ```bash
 python -m http.server 5700 --directory juego
 ```
 
-Después entrá a **http://localhost:5700**. No necesita instalar nada.
+Después entrá a **http://localhost:5700**.
+
+## Instalarlo en el celular
+
+Es una PWA: se instala como cualquier app, con su ícono, a pantalla completa y
+sin internet.
+
+- **Android (Chrome):** aparece el botón **Instalar** arriba a la derecha. Si
+  no, menú ⋮ → «Instalar aplicación».
+- **iPhone (Safari):** compartir → «Agregar a inicio».
+
+Abrilo desde Chrome o Safari, no desde el navegador interno de WhatsApp o
+Instagram — ahí no aparece la opción de instalar.
+
+Se abre **apaisado** (el manifest lo pide), que es como se ve bien el campo de
+batalla.
 
 ## Cómo se juega
 
