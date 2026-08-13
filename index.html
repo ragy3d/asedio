@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>Asedio — batalla medieval</title>
+<meta name="theme-color" content="#12161f">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/menu.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚔️</text></svg>">
+</head>
+<body>
+
+<!-- ================= MENÚ ================= -->
+<section class="pantalla" data-pantalla="menu">
+  <header class="cabecera">
+    <div class="marca">⚔️ <span>Asedio</span></div>
+    <div class="monedas">
+      <span class="moneda-caja"><span class="copa"></span><b id="copas">0</b></span>
+      <span class="moneda-caja"><span class="gema"></span><b id="gemas">0</b></span>
+    </div>
+  </header>
+
+  <div class="arena-caja">
+    <div class="arena-cab">
+      <div>
+        <small id="arenaNum">Arena 1</small>
+        <b id="arenaNombre">Campo de Entrenamiento</b>
+      </div>
+      <button id="ayudaBtn" class="mini" title="Cómo se juega">?</button>
+    </div>
+    <div class="arena-barra-caja"><div id="arenaBarra" class="arena-barra"></div></div>
+    <small id="arenaFaltan" class="arena-faltan"></small>
+  </div>
+
+  <nav class="tabs">
+    <button class="tab activa" data-tab="batalla">⚔️ Batalla</button>
+    <button class="tab" data-tab="equipo">🎖️ Equipo</button>
+    <button class="tab" data-tab="tienda">🛒 Tienda</button>
+    <button class="tab" data-tab="ajustes">⚙️ Ajustes</button>
+  </nav>
+
+  <div class="paneles">
+
+    <!-- ---------- BATALLA ---------- -->
+    <div class="panel-tab" data-panel="batalla">
+      <h3 class="titulillo">Tu equipo</h3>
+      <div id="equipoResumen" class="equipo-resumen"></div>
+      <button id="pelearBtn" class="btn-grande">¡A pelear!</button>
+      <p id="estadisticas" class="micro centro"></p>
+
+      <h3 class="titulillo">Arenas</h3>
+      <div id="listaArenas" class="lista-arenas"></div>
+    </div>
+
+    <!-- ---------- EQUIPO ---------- -->
+    <div class="panel-tab oculto" data-panel="equipo">
+      <h3 class="titulillo">Tus 4 tropas <small>tocá una ranura y después la tropa</small></h3>
+      <div id="ranuras" class="ranuras"></div>
+
+      <h3 class="titulillo">Todas las tropas</h3>
+      <div id="coleccion" class="coleccion"></div>
+
+      <h3 class="titulillo">Quién le gana a quién</h3>
+      <ul id="tablaVentajas" class="ventajas"></ul>
+    </div>
+
+    <!-- ---------- TIENDA ---------- -->
+    <div class="panel-tab oculto" data-panel="tienda">
+      <div class="tienda-cab">
+        <h3 class="titulillo">Skins de torre</h3>
+        <span class="moneda-caja"><span class="gema"></span><b id="gemasTienda">0</b></span>
+      </div>
+      <p class="micro">Las gemas se ganan jugando: más en arenas altas, y más si ganás.</p>
+      <div id="skinsGemas" class="skins"></div>
+
+      <h3 class="titulillo">Packs</h3>
+      <div id="skinsPesos" class="skins"></div>
+      <p id="avisoPagos" class="aviso"></p>
+    </div>
+
+    <!-- ---------- AJUSTES ---------- -->
+    <div class="panel-tab oculto" data-panel="ajustes">
+      <h3 class="titulillo">Ajustes</h3>
+
+      <label class="fila-cfg">
+        <span>Sonido</span>
+        <input id="cfgSonido" type="checkbox">
+      </label>
+
+      <h3 class="titulillo">Tu progreso</h3>
+      <p id="resumenProgreso" class="micro"></p>
+      <p class="micro">Se guarda solo en este navegador. Si borrás los datos del
+        sitio o entrás desde otro dispositivo, arrancás de cero.</p>
+      <button id="cfgBorrar" class="btn-peligro">Borrar todo el progreso</button>
+
+      <h3 class="titulillo">Controles</h3>
+      <p class="micro">En la compu: teclas <b>1-4</b> para las tropas y <b>E</b>
+        para mejorar la economía.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ================= BATALLA ================= -->
+<section class="pantalla oculto" data-pantalla="batalla">
+  <div class="juego">
+    <header class="barra">
+      <div class="bando bando-yo">
+        <span class="escudo">🔵</span>
+        <div class="vida-caja"><div id="vidaJugador" class="vida vida-yo"></div></div>
+      </div>
+      <div class="centro">
+        <span id="reloj" class="reloj">0:00</span>
+        <small id="arenaEnJuego" class="arena-mini"></small>
+        <small id="asalto" class="asalto-aviso oculto"></small>
+      </div>
+      <div class="bando bando-rival">
+        <div class="vida-caja"><div id="vidaEnemigo" class="vida vida-rival"></div></div>
+        <span class="escudo">🔴</span>
+      </div>
+      <button id="rendirseBtn" class="mini salir" title="Abandonar">✕</button>
+    </header>
+
+    <div class="girar">🔄 Girá el celular: el campo de batalla se ve mucho mejor apaisado.</div>
+
+    <div class="campo"><canvas id="lienzo"></canvas></div>
+
+    <footer class="controles">
+      <div class="oro-caja">
+        <span class="oro-ico"></span>
+        <span id="oro" class="oro-num">0</span>
+        <span id="renta" class="oro-renta">+12/s</span>
+      </div>
+      <div id="cartas" class="cartas"></div>
+      <button id="mejoraBtn" class="mejora" title="Mejorar economía (E)">
+        <span>+5 oro/s</span><small>80</small>
+      </button>
+    </footer>
+  </div>
+</section>
+
+<!-- ================= RESULTADO ================= -->
+<div id="finOverlay" class="overlay oculto">
+  <div class="panel">
+    <h1 id="finTitulo" class="titulo">¡Victoria!</h1>
+    <p id="finTexto" class="bajada"></p>
+    <div id="finPremios" class="premios"></div>
+    <div id="finAscenso" class="ascenso oculto"></div>
+    <p id="finDatos" class="micro"></p>
+    <button id="otraBtn" class="btn-grande">Otra vez</button>
+    <button id="alMenuBtn" class="btn-secundario">Volver al menú</button>
+  </div>
+</div>
+
+<!-- ================= AYUDA ================= -->
+<div id="ayudaOverlay" class="overlay oculto">
+  <div class="panel">
+    <h2>Cómo se juega</h2>
+    <ul class="lista">
+      <li><b>El oro sube solo.</b> Cada tropa cuesta oro; si no te alcanza, la carta se ve apagada.</li>
+      <li><b>Las tropas pelean solas.</b> Vos elegís qué mandar y cuándo — ahí está el juego.</li>
+      <li><b>Respetá el triángulo.</b> Pegarle con la tropa correcta hace casi el doble de daño.</li>
+      <li><b>Ganás copas</b> al ganar y las perdés al perder. Con copas subís de arena, y cada arena suma tropas nuevas.</li>
+      <li><b>Las gemas</b> se juntan jugando y sirven para las skins de la torre.</li>
+    </ul>
+    <button id="ayudaCerrar" class="btn-grande">Entendido</button>
+  </div>
+</div>
+
+<div id="toast" class="toast oculto"></div>
+
+<script src="js/data.js"></script>
+<script src="js/progreso.js"></script>
+<script src="js/render.js"></script>
+<script src="js/game.js"></script>
+<script src="js/pagos.js"></script>
+<script src="js/ui.js"></script>
+</body>
+</html>

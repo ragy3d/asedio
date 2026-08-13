@@ -1,0 +1,193 @@
+:root{
+  --bg:#12161f;
+  --panel:#1b2130;
+  --panel-2:#232b3d;
+  --line:#2f3950;
+  --txt:#eef1f8;
+  --txt-2:#9aa4bd;
+  --oro:#ffd166;
+  --yo:#5b8dd6;
+  --rival:#d65b5b;
+  --shadow:0 10px 34px rgba(0,0,0,.5);
+}
+*{box-sizing:border-box}
+html,body{
+  margin:0;height:100%;overflow:hidden;
+  background:var(--bg);color:var(--txt);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  -webkit-tap-highlight-color:transparent;
+  user-select:none;
+}
+button{font:inherit;cursor:pointer;color:inherit}
+.oculto{display:none !important}
+
+.juego{display:flex;flex-direction:column;justify-content:center;height:100%;max-width:1100px;margin:0 auto}
+
+/* ---------------- barra superior ---------------- */
+.barra{
+  display:flex;align-items:center;gap:12px;
+  padding:9px 12px;background:var(--panel);border-bottom:1px solid var(--line);
+}
+.barra .salir{flex:none;margin-left:2px}
+.arena-mini{font-size:10.5px;color:var(--txt-3);white-space:nowrap;max-width:130px;
+  overflow:hidden;text-overflow:ellipsis}
+.bando{display:flex;align-items:center;gap:8px;flex:1;min-width:0}
+.bando-rival{flex-direction:row;justify-content:flex-end}
+.escudo{font-size:17px;flex:none}
+.vida-caja{
+  flex:1;height:13px;background:#0d1119;border:1px solid var(--line);
+  border-radius:7px;overflow:hidden;min-width:60px;
+}
+.vida{height:100%;width:100%;transition:width .18s linear;border-radius:6px}
+.vida-yo{background:linear-gradient(90deg,#4a7fd0,#79b0f5)}
+.vida-rival{background:linear-gradient(270deg,#c74d4d,#f08585)}
+
+.centro{display:flex;flex-direction:column;align-items:center;gap:4px;flex:none}
+.reloj{font-size:13px;color:var(--txt-2);font-variant-numeric:tabular-nums;font-weight:600}
+.botones-mini{display:flex;gap:5px}
+.mini{
+  width:29px;height:29px;border-radius:9px;border:1px solid var(--line);
+  background:var(--panel-2);color:var(--txt-2);font-size:13px;line-height:1;
+  display:grid;place-items:center;transition:.15s;
+}
+.mini:hover{color:var(--txt);border-color:var(--txt-2)}
+
+/* ---------------- campo ---------------- */
+/* El campo de batalla es panorámico: si lo dejamos estirarse en pantallas
+   altas queda medio monitor de cielo vacío. Le fijamos la proporción y el
+   sobrante lo absorbe el centrado del contenedor. */
+.campo{
+  flex:0 1 auto;width:100%;aspect-ratio:1000/430;max-height:100%;
+  min-height:0;position:relative;background:#0d1119;
+}
+#lienzo{width:100%;height:100%;display:block;touch-action:manipulation}
+
+/* aviso de girar el celular: el juego se ve mucho mejor apaisado */
+.girar{
+  display:none;align-items:center;justify-content:center;gap:7px;
+  padding:7px 12px;background:var(--panel-2);border-bottom:1px solid var(--line);
+  font-size:12px;color:var(--txt-2);text-align:center;
+}
+@media (max-width:700px) and (orientation:portrait){
+  .girar{display:flex}
+}
+
+/* ---------------- controles ---------------- */
+.controles{
+  display:flex;align-items:stretch;gap:9px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));
+  background:var(--panel);border-top:1px solid var(--line);
+}
+.oro-caja{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:0 12px;border-radius:13px;background:var(--panel-2);
+  border:1px solid var(--line);flex:none;min-width:82px;
+}
+/* moneda dibujada en CSS: el emoji 🪙 no existe en muchas fuentes */
+.moneda,.oro-ico,.carta-costo::before,.mejora small::before{
+  display:inline-block;border-radius:50%;
+  background:radial-gradient(circle at 35% 32%, #ffe9a8, var(--oro) 62%, #c99a2e);
+  box-shadow:inset 0 -1px 1px rgba(120,80,0,.45);
+}
+.oro-ico{width:13px;height:13px}
+.carta-costo::before,.mejora small::before{
+  content:"";width:8px;height:8px;margin-right:4px;vertical-align:-1px;
+}
+.oro-num{
+  font-size:21px;font-weight:750;color:var(--oro);
+  font-variant-numeric:tabular-nums;line-height:1.15;letter-spacing:-.02em;
+}
+.oro-renta{font-size:10.5px;color:var(--txt-2)}
+
+.cartas{display:flex;gap:8px;flex:1;min-width:0}
+.carta{
+  flex:1;min-width:0;position:relative;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+  padding:9px 4px;border-radius:13px;
+  background:var(--panel-2);border:1.5px solid var(--c,var(--line));
+  transition:transform .11s, opacity .15s, box-shadow .15s;
+  box-shadow:0 0 0 rgba(0,0,0,0);
+}
+.carta:hover{box-shadow:0 0 16px -3px var(--c)}
+.carta:active{transform:scale(.94)}
+.carta.sinplata{opacity:.36;border-color:var(--line)}
+.carta-tecla{
+  position:absolute;top:3px;left:5px;font-size:9px;color:var(--txt-2);
+  background:rgba(0,0,0,.35);border-radius:4px;padding:0 4px;
+}
+.carta-ico{font-size:21px;line-height:1.1}
+.carta-nombre{font-size:11.5px;font-weight:650;white-space:nowrap}
+.carta-costo{font-size:10.5px;color:var(--oro);font-weight:600}
+
+.mejora{
+  flex:none;min-width:96px;padding:9px 11px;border-radius:13px;
+  background:var(--panel-2);border:1.5px solid #4a7a4e;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  transition:.15s;
+}
+.mejora span{font-size:12px;font-weight:650;color:#8fdba0}
+.mejora small{font-size:10.5px;color:var(--oro)}
+.mejora:disabled{opacity:.36;border-color:var(--line);cursor:default}
+.mejora:not(:disabled):hover{box-shadow:0 0 16px -3px #4a7a4e}
+
+/* ---------------- overlays ---------------- */
+.overlay{
+  position:fixed;inset:0;z-index:20;display:grid;place-items:center;padding:18px;
+  background:rgba(8,11,17,.82);backdrop-filter:blur(6px);
+  animation:aparecer .18s ease-out;
+}
+@keyframes aparecer{from{opacity:0}to{opacity:1}}
+.panel{
+  background:var(--panel);border:1px solid var(--line);border-radius:20px;
+  padding:24px;max-width:430px;width:100%;text-align:center;box-shadow:var(--shadow);
+  max-height:90vh;overflow-y:auto;
+  animation:subir .22s ease-out;
+}
+@keyframes subir{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.titulo{font-size:31px;margin:0 0 8px;letter-spacing:-.02em}
+.titulo.gano{color:#6ee7a8}
+.titulo.perdio{color:#f08585}
+.bajada{color:var(--txt-2);font-size:14px;line-height:1.6;margin:0 0 18px}
+.micro{font-size:12px;color:var(--txt-2);line-height:1.55;margin:10px 0 0}
+.pie{margin-top:14px}
+.panel h2{font-size:20px;margin:0 0 16px}
+
+.triangulo{
+  background:var(--panel-2);border:1px solid var(--line);border-radius:14px;
+  padding:14px;margin-bottom:20px;text-align:left;
+}
+.triangulo h3{font-size:12.5px;color:var(--txt-2);margin:0 0 10px;font-weight:600;
+  text-transform:uppercase;letter-spacing:.06em}
+.counters{list-style:none;margin:0;padding:0;font-size:13.5px}
+.counters li{padding:5px 0;border-bottom:1px solid var(--line)}
+.counters li:last-child{border-bottom:none}
+
+.lista{text-align:left;font-size:13.5px;color:var(--txt-2);line-height:1.65;
+  margin:0 0 20px;padding-left:19px}
+.lista li{margin-bottom:9px}
+.lista b{color:var(--txt)}
+
+.btn-grande{
+  width:100%;padding:13px;border-radius:13px;border:none;font-size:15.5px;font-weight:700;
+  background:linear-gradient(135deg,#5b8dd6,#7b5bb5);color:#fff;transition:.15s;
+}
+.btn-grande:hover{filter:brightness(1.1)}
+.btn-grande:active{transform:scale(.98)}
+
+/* ---------------- celular ---------------- */
+@media (max-width:560px){
+  .carta-nombre{font-size:10.5px}
+  .carta-ico{font-size:19px}
+  .oro-caja{min-width:66px;padding:0 8px}
+  .oro-num{font-size:18px}
+  .mejora{min-width:74px;padding:8px 6px}
+  .mejora span{font-size:11px}
+  .controles{gap:6px;padding:8px}
+  .cartas{gap:5px}
+  .titulo{font-size:26px}
+}
+@media (max-height:460px){
+  .barra{padding:5px 10px}
+  .controles{padding:6px 10px}
+  .carta{padding:5px 3px}
+}
