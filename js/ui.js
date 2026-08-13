@@ -315,6 +315,33 @@ addEventListener("keydown", ev => {
   }
 });
 
+/* ===================== INSTALAR ===================== */
+let eventoInstalar = null;
+
+addEventListener("beforeinstallprompt", ev => {
+  ev.preventDefault();
+  eventoInstalar = ev;
+  $("instalarBtn").classList.remove("oculto");
+});
+
+$("instalarBtn").onclick = async () => {
+  if(!eventoInstalar) return;
+  eventoInstalar.prompt();
+  const { outcome } = await eventoInstalar.userChoice;
+  eventoInstalar = null;
+  $("instalarBtn").classList.add("oculto");
+  if(outcome === "accepted") Batalla.toast("Instalado 🎉 buscalo entre tus apps");
+};
+
+addEventListener("appinstalled", () => {
+  eventoInstalar = null;
+  $("instalarBtn").classList.add("oculto");
+});
+
+if("serviceWorker" in navigator){
+  navigator.serviceWorker.register("sw.js").catch(() => {});
+}
+
 /* ===================== ARRANQUE ===================== */
 Render.init($("lienzo"));
 Batalla.arrancarBucle();
